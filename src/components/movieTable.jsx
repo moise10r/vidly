@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Like from './like'
+import Like from './common/like'
 
 const MovieTable = ({ allMovies, onSort, onDelete, onLike }) => {
   return (

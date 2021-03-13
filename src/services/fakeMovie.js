@@ -1,4 +1,4 @@
-
+ 
 const movies=[
 {
  _id:"6035a4e105c319a9880as252b1n",
