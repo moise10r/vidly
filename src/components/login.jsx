@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Input from './common/input'
 
 class Login extends Component {
   state = {
@@ -6,12 +7,24 @@ class Login extends Component {
       username: '',
       password: '',
     },
+    errors: {},
   }
-  username = React.createRef()
 
+  validate = () => {
+    const errors = {}
+    const { account } = this.state
+    if (account.username.trim() === '') errors.username = 'username is required'
+    if (account.password.trim() === '') errors.password = 'password is required'
+    return Object.keys(errors).length === 0 ? null : errors
+  }
   handleSubmit = (e) => {
     e.preventDefault()
-    const username = this.username.current.value
+    const errors = this.validate()
+    // if (errors) return
+    this.setState({ errors: errors || {} })
+    if (errors) {
+      return
+    }
     console.log('submitted')
   }
   handleOnchange = ({ target: input }) => {
@@ -20,7 +33,6 @@ class Login extends Component {
     this.setState({
       account,
     })
-    console.log()
   }
   render() {
     const { account } = this.state
@@ -28,30 +40,21 @@ class Login extends Component {
       <div style={{ width: '30%', margin: '50px auto' }}>
         <h2>Login</h2>
         <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              autoFocus
-              ref={this.username}
-              onChange={this.handleOnchange}
-              value={account.username}
-              type="text"
-              name="username"
-              id="username"
-              className="form-control"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              onChange={this.handleOnchange}
-              value={account.password}
-              name="password"
-              type="password"
-              id="password"
-              className="form-control"
-            />
-          </div>
+          <Input
+            name="username"
+            label="Username"
+            onChange={this.handleOnchange}
+            value={account.username}
+            errors={this.state.errors.username}
+          />
+          <Input
+            name="password"
+            label="Password"
+            onChange={this.handleOnchange}
+            value={account.password}
+            errors={this.state.errors.password}
+          />
+
           <button type="submit" className="btn btn-primary">
             Login
           </button>
