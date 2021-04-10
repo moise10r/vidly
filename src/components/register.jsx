@@ -1,35 +1,37 @@
 import React, { Component } from 'react'
-import Joi from 'joi-browser'
 import Form from './common/form'
-class Login extends Form {
+import Joi from 'joi-browser'
+class Register extends Form {
   state = {
     data: {
       username: '',
       password: '',
+      name: '',
     },
     errors: {},
-    isSubmitted: false,
   }
 
   schema = {
-    username: Joi.string().required().label('Username'),
-    password: Joi.string().required().label('Password'),
+    username: Joi.string().required().email().label('Username'),
+    password: Joi.string().required().min(5).label('Password'),
+    name: Joi.string().required().label('Name'),
   }
   onSubmit = () => {
-    console.log('submitted')
+    console.log('user registereed')
   }
   render() {
     return (
       <div style={{ width: '30%', margin: '50px auto' }}>
-        <h2>Login</h2>
+        <h2>Register</h2>
         <form onSubmit={this.handleSubmit}>
           {this.renderInput('username', 'Username')}
           {this.renderInput('password', 'Password', 'password')}
-          {this.renderButton('Login')}
+          {this.renderInput('name', 'Name')}
+          {this.renderButton('Register')}
         </form>
       </div>
     )
   }
 }
 
-export default Login
+export default Register

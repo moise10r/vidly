@@ -24,6 +24,19 @@
 .styled-table tbody tr{
     border-bottom: 1px solid #dddddd;
 }
+.styled-table tbody tr a{
+    text-decoration: none;
+    color: #000;
+}
+.styled-table tbody tr a:hover{
+    color: red;
+}
+.new-movie{
+    border: none;
+    padding: 10px 20px;
+    background-color: blueviolet;
+    color: #fff;
+}
 .styled-table tbody tr:nth-of-type(even){
     background-color: #f3f3f3;
 }
@@ -110,6 +123,9 @@ span{
     padding: 0 25px;
  
 }
+a{
+    text-decoration: none;
+}
 .navbar-area ul li a{
     color: #ccc;
     font-weight: 600;
@@ -118,4 +134,7 @@ span{
 }
 .navbar-area ul li a:hover{
     color: yellowgreen;
+}
+.click{
+    color: red;
 }

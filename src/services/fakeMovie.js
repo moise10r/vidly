@@ -1,5 +1,5 @@
- 
-const movies=[
+ import genre from './genre'
+export const movies=[
 {
  _id:"6035a4e105c319a9880as252b1n",
 
@@ -123,5 +123,19 @@ like:true
    
 
 ]
+export  default function saveMovie(movie){
+    const newMovieInDB = movies.find(m=>m._id === movie._id) || {}
+    newMovieInDB.title = movie.title
+    newMovieInDB.numberInstock = movie.numberInstock
+    newMovieInDB.dailyRentalRate = movie.dailyRentalRate
+    newMovieInDB.genre = genre.find(g=>g._id === movie.genreId)
+    if(!newMovieInDB._id){
+        newMovieInDB._id = Date.now().toString()
+        movies.push(newMovieInDB)
+        console.log(movies);
+        console.log("after");
+    }
+    return newMovieInDB
+   }
 
-module.exports=movies
+// module.exports=movies

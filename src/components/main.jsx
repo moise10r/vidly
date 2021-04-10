@@ -11,13 +11,14 @@ class Main extends Component {
   state = {
     movies: [],
     like: true,
-    limit: 4,
+    limit: 1,
     currentPage: 1,
     genre: [],
     sortColumn: {
       path: 'title',
       order: 'asc',
     },
+    active: false,
   }
 
   handleDeleteMovie = (movie) => {
@@ -60,12 +61,17 @@ class Main extends Component {
     })
   }
 
+  tag = React.createRef()
   handleChangeColor = (movie) => {
     const movies = [...this.state.movies]
     const index = movies.indexOf(movie)
     movies[index] = { ...movies[index] }
     movies[index].like = !movies[index].like
-    this.setState({ movies })
+    const user = this.state.active
+      ? this.tag.current.classList.add('click')
+      : this.tag.current.classList.remove('click')
+    console.log(user)
+    this.setState({ movies, active: !this.state.active })
   }
 
   handleGenre = (genre) => {
@@ -87,6 +93,8 @@ class Main extends Component {
       movies: getMovies,
       genre,
     })
+    console.log('movies', this.state.movies)
+    console.log('frist')
   }
   handleSort = (path) => {
     console.log(path)
@@ -97,6 +105,9 @@ class Main extends Component {
       },
     })
   }
+  handleOneMovie = (movie) => {
+    console.log(movie)
+  }
   render() {
     const {
       movies,
@@ -106,14 +117,14 @@ class Main extends Component {
       currentPage,
       limit,
     } = this.state
-    const newArrOfMoviesInStock = []
-    const oneMovie = movies.map((item) => {
-      newArrOfMoviesInStock.push(item.numberInstock)
-    })
-    let sum = 0
-    for (let i = 0; i < newArrOfMoviesInStock.length; i++) {
-      sum = sum + newArrOfMoviesInStock[i]
-    }
+    // const newArrOfMoviesInStock = []
+    // const oneMovie = movies.map((item) => {
+    //   newArrOfMoviesInStock.push(item.numberInstock)
+    // })
+    // let sum = 0
+    // for (let i = 0; i < newArrOfMoviesInStock.length; i++) {
+    //   sum = sum + newArrOfMoviesInStock[i]
+    // }
     const filtered =
       selectedGenre && selectedGenre._id
         ? movies.filter((m) => m.genre._id === selectedGenre._id)
@@ -146,7 +157,7 @@ class Main extends Component {
           ) : (
             <>
               <div>
-                <h2>
+                <h2 ref={this.tag}>
                   Number of movies <span>{filtered.length}</span>{' '}
                 </h2>
                 <MovieTable
@@ -154,6 +165,7 @@ class Main extends Component {
                   onLike={this.handleChangeColor}
                   onSort={this.handleSort}
                   onDelete={this.handleDeleteMovie}
+                  OnehandleOneMovie={this.handleOneMovie}
                 />
                 <div>
                   <Pagination
