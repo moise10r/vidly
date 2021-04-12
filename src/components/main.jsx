@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
-import getMovies from '../services/fakeMovie'
-import Movie from './movie'
+import { getMovies } from '../services/fakeMovie'
 import Genre from './genre'
 import getGenre from '../services/genre'
 import Pagination from './common/pagination'
 import { paginate } from '../utils/pagination'
 import MovieTable from './movieTable'
+import SearchInput from './common/search'
 import _ from 'lodash'
+
 class Main extends Component {
   state = {
     movies: [],
     like: true,
-    limit: 1,
+    limit: 10,
     currentPage: 1,
     genre: [],
     sortColumn: {
@@ -19,6 +20,8 @@ class Main extends Component {
       order: 'asc',
     },
     active: false,
+    searchQuery: '',
+    selectedGenre: null,
   }
 
   handleDeleteMovie = (movie) => {
@@ -78,6 +81,7 @@ class Main extends Component {
     this.setState({
       selectedGenre: genre,
       currentPage: 1,
+      searchQuery: '',
     })
   }
   OnchangePage = (page) => {
@@ -108,30 +112,45 @@ class Main extends Component {
   handleOneMovie = (movie) => {
     console.log(movie)
   }
+
+  handleSearch = (query) => {
+    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 })
+  }
+  getPageData = () => {
+    const {
+      movies,
+      selectedGenre,
+      sortColumn,
+      currentPage,
+      limit,
+      searchQuery,
+    } = this.state
+
+    let filtered = movies
+    if (searchQuery) {
+      filtered = movies.filter((m) =>
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase()),
+      )
+    } else if (selectedGenre && selectedGenre._id) {
+      filtered = movies.filter((m) => m.genre._id == selectedGenre._id)
+    }
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order])
+    const allMovies = paginate(sorted, currentPage, limit)
+    return {
+      data: allMovies,
+      totalCount: filtered.length,
+    }
+  }
   render() {
     const {
       movies,
       genre,
       selectedGenre,
-      sortColumn,
       currentPage,
       limit,
+      searchQuery,
     } = this.state
-    // const newArrOfMoviesInStock = []
-    // const oneMovie = movies.map((item) => {
-    //   newArrOfMoviesInStock.push(item.numberInstock)
-    // })
-    // let sum = 0
-    // for (let i = 0; i < newArrOfMoviesInStock.length; i++) {
-    //   sum = sum + newArrOfMoviesInStock[i]
-    // }
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? movies.filter((m) => m.genre._id === selectedGenre._id)
-        : movies
-
-    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order])
-    const allMovies = paginate(sorted, currentPage, limit)
+    const { data, totalCount } = this.getPageData()
     return (
       <div
         className="main-container"
@@ -152,16 +171,17 @@ class Main extends Component {
           />
         </div>
         <div className="containers" style={{}}>
-          {filtered.length === 0 ? (
+          {movies.length === 0 ? (
             <h3>There is no movie again</h3>
           ) : (
             <>
               <div>
-                <h2 ref={this.tag}>
-                  Number of movies <span>{filtered.length}</span>{' '}
+                <h2>
+                  Number of movies <span>{totalCount}</span>{' '}
                 </h2>
+                <SearchInput value={searchQuery} onChange={this.handleSearch} />
                 <MovieTable
-                  allMovies={allMovies}
+                  allMovies={data}
                   onLike={this.handleChangeColor}
                   onSort={this.handleSort}
                   onDelete={this.handleDeleteMovie}
@@ -171,29 +191,13 @@ class Main extends Component {
                   <Pagination
                     OnchangePage={this.OnchangePage}
                     currentPage={currentPage}
-                    itemsCount={filtered.length}
+                    itemsCount={movies.length}
                     pageSize={limit}
                   />
                 </div>
               </div>
             </>
           )}
-          <>
-            {/* <button className="btn btn-info" onClick={this.resetNumberInStock}>
-            Reset
-          </button> */}
-            {/* {movies.map((item) => (
-            <Movie
-              onDelete={this.handleDelete}
-              key={item._id}
-              numberStock={item.numberInstock}
-              id={item._id}
-              handleIncrement={this.handleIncrement}
-              movie={item}
-              handleDecrement={this.handleDecrement}
-            />
-          ))} */}
-          </>
         </div>
       </div>
     )

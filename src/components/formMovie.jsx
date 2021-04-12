@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Joi from 'joi-browser'
 import Form from './common/form'
-import getMovie from '../services/genre'
-import movies from '../services/fakeMovie'
+import getGenres from '../services/genre'
+import { getMovie, saveMovie } from '../services/fakeMovie'
 
 class FormMovie extends Form {
   state = {
@@ -27,14 +27,15 @@ class FormMovie extends Form {
       .label('Daily Rental Rate'),
   }
   componentDidMount() {
-    const genre = getMovie
+    const genre = getGenres
     this.setState({
       genre,
     })
     const movieId = this.props.match.params
-    if (movieId == 'new') return null
-    const movie = movies.find((m) => m._id === movieId.id)
-    if (!movie) return this.props.history.replace('/not-found')
+    if (movieId.id === 'new') return
+    const movie = getMovie(movieId.id)
+    if (!movieId) return this.props.history.replace('/not-found')
+    console.log(movie)
     this.setState({
       data: this.mapToViewModel(movie),
     })
@@ -48,12 +49,12 @@ class FormMovie extends Form {
       dailyRentalRate: movie.dailyRentalRate,
     }
   }
-  saveMovie = () => {}
   onSubmit = () => {
+    this.props.history.push('/')
+    saveMovie(this.state.data)
     console.log('add movie')
   }
   render() {
-    console.log(this.state.data)
     return (
       <div style={{ width: '30%', margin: '50px auto' }}>
         <h2>Movie Form</h2>

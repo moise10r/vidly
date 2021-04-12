@@ -9,7 +9,6 @@ import NotFound from './components/notfound'
 import Login from './components/login'
 import Register from './components/register';
 import FormMovie from './components/formMovie';
-import NewMovie from './components/newMovie'
 
 class App extends Component{
   render(){
@@ -19,9 +18,7 @@ class App extends Component{
         <NavBar />
         <Switch>
           <Route path="/movies/:id" component={FormMovie} />
-          <Route path="/movie/new" component={NewMovie} />
           <Route path="/movies" component={Main} />
-          <Route  path="/movie/new" component={FormMovie} />
           <Route path="/login" component={Login } />
           <Route path="/register" component={Register } />
           <Route path="/articles" component={Articles} />
