@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { getMovies } from '../services/fakeMovie'
-import Genre from './genre'
+import Genre from './common/genre'
 import getGenre from '../services/genre'
 import Pagination from './common/pagination'
 import { paginate } from '../utils/pagination'
@@ -12,7 +12,7 @@ class Main extends Component {
   state = {
     movies: [],
     like: true,
-    limit: 10,
+    limit: 4,
     currentPage: 1,
     genre: [],
     sortColumn: {
@@ -70,11 +70,7 @@ class Main extends Component {
     const index = movies.indexOf(movie)
     movies[index] = { ...movies[index] }
     movies[index].like = !movies[index].like
-    const user = this.state.active
-      ? this.tag.current.classList.add('click')
-      : this.tag.current.classList.remove('click')
-    console.log(user)
-    this.setState({ movies, active: !this.state.active })
+    this.setState({ movies })
   }
 
   handleGenre = (genre) => {
@@ -97,16 +93,10 @@ class Main extends Component {
       movies: getMovies,
       genre,
     })
-    console.log('movies', this.state.movies)
-    console.log('frist')
   }
-  handleSort = (path) => {
-    console.log(path)
+  handleSort = (sortColumn) => {
     this.setState({
-      sortColumn: {
-        path,
-        order: 'asc',
-      },
+      sortColumn,
     })
   }
   handleOneMovie = (movie) => {
@@ -182,6 +172,7 @@ class Main extends Component {
                 <SearchInput value={searchQuery} onChange={this.handleSearch} />
                 <MovieTable
                   allMovies={data}
+                  sortColumn={this.state.sortColumn}
                   onLike={this.handleChangeColor}
                   onSort={this.handleSort}
                   onDelete={this.handleDeleteMovie}
